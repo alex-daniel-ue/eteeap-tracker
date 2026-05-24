@@ -16,6 +16,6 @@ export function createTray(port: number): Tray {
             click: () => app.quit()
         },
     ]));
-
+    
     return tray;
 }
