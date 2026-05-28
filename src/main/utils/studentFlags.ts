@@ -1,28 +1,31 @@
-const WARNING_MONTHS = 18;
-const OVERDUE_MONTHS = 24;
+import { getConfig } from '../config';
 
-export function computeStudentFlags(student: any) {
-	const flags = {
-		isWarning: false,
-		isOverdue: false
-	};
+export function computeWarningFlags(student: any) {
+    const flags = {
+        isWarning: false,
+        isOverdue: false,
+        months_elapsed: 0
+    };
 
-	if (!student.enroll_date) {
-		return { ...student, ...flags };
-	}
+    if (!student?.enroll_date || student.status !== 'enrolled') {
+        return { ...student, ...flags };
+    }
 
-	const enrollDate = new Date(student.enroll_date);
-	if (isNaN(enrollDate.getTime())) {
-		return { ...student, ...flags };
-	}
+    const enrollDate = new Date(student.enroll_date);
+    
+    if (isNaN(enrollDate.getTime())) {
+        return { ...student, ...flags };
+    }
 
-	const now = new Date();
-	const diffMonths =
-		(now.getFullYear() - enrollDate.getFullYear()) * 12 +
-		(now.getMonth() - enrollDate.getMonth());
+    const now = new Date();
+    const monthDifference =
+        (now.getFullYear() - enrollDate.getFullYear()) * 12 +
+        (now.getMonth() - enrollDate.getMonth());
 
-	flags.isWarning = diffMonths >= WARNING_MONTHS && diffMonths < OVERDUE_MONTHS;
-	flags.isOverdue = diffMonths >= OVERDUE_MONTHS;
+    const config = getConfig();
+    flags.isWarning = monthDifference >= config.warning_threshold_months && monthDifference < config.overdue_threshold_months;
+    flags.isOverdue = monthDifference >= config.overdue_threshold_months;
+    flags.months_elapsed = monthDifference;
 
-	return { ...student, ...flags };
+    return { ...student, ...flags };
 }

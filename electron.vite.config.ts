@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   main: {},
@@ -11,10 +12,13 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      tailwindcss()
+    ],
     server: {
       proxy: {
-        '/api': 'http://localhost:3456'
+        '/api': 'http://localhost:2575'
       }
     }
   }

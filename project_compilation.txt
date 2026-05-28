@@ -1,0 +1,2776 @@
+============================================================
+FILE: .prettierrc.yaml
+============================================================
+
+singleQuote: true
+semi: false
+printWidth: 100
+trailingComma: none
+
+
+============================================================
+FILE: electron-builder.yml
+============================================================
+
+appId: com.electron.app
+productName: eteeap-tracker
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asarUnpack:
+  - resources/**
+win:
+  executableName: eteeap-tracker
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+dmg:
+  artifactName: ${name}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${name}-${version}.${ext}
+npmRebuild: false
+publish:
+  provider: generic
+  url: https://example.com/auto-updates
+
+
+============================================================
+FILE: electron.vite.config.ts
+============================================================
+
+import { resolve } from 'path'
+import { defineConfig } from 'electron-vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  main: {},
+  preload: {},
+  renderer: {
+    resolve: {
+      alias: {
+        '@renderer': resolve('src/renderer/src')
+      }
+    },
+    plugins: [
+      react(),
+      tailwindcss()
+    ],
+    server: {
+      proxy: {
+        '/api': 'http://localhost:2575'
+      }
+    }
+  }
+})
+
+============================================================
+FILE: package.json
+============================================================
+
+{
+  "name": "eteeap-tracker",
+  "version": "1.0.0",
+  "description": "An Electron application with React and TypeScript",
+  "main": "./out/main/index.js",
+  "author": "example.com",
+  "homepage": "https://electron-vite.org",
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "eslint --cache .",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "npm run typecheck && electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "npm run build && electron-builder --dir",
+    "build:win": "npm run build && electron-builder --win",
+    "build:mac": "electron-vite build && electron-builder --mac",
+    "build:linux": "electron-vite build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron-toolkit/utils": "^4.0.0",
+    "@hello-pangea/dnd": "^18.0.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "better-sqlite3": "^12.10.0",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "express": "^5.2.1",
+    "fuse.js": "^7.3.0",
+    "multer": "^2.1.1",
+    "next-themes": "^0.4.6",
+    "react-bootstrap": "^2.10.10",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.15.1",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/eslint-config-prettier": "^3.0.0",
+    "@electron-toolkit/eslint-config-ts": "^3.1.0",
+    "@electron-toolkit/tsconfig": "^2.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^22.19.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "electron": "^39.2.6",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^5.0.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "prettier": "^3.7.4",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6"
+  }
+}
+
+
+============================================================
+FILE: README.md
+============================================================
+
+# eteeap-tracker
+
+An Electron application with React and TypeScript
+
+## Recommended IDE Setup
+
+- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+## Project Setup
+
+### Install
+
+```bash
+$ npm install
+```
+
+### Development
+
+```bash
+$ npm run dev
+```
+
+### Build
+
+```bash
+# For windows
+$ npm run build:win
+
+# For macOS
+$ npm run build:mac
+
+# For Linux
+$ npm run build:linux
+```
+
+
+============================================================
+FILE: tsconfig.json
+============================================================
+
+{
+  "files": [],
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
+}
+
+
+============================================================
+FILE: tsconfig.node.json
+============================================================
+
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*"],
+  "compilerOptions": {
+    "composite": true,
+    "types": ["electron-vite/node"]
+  }
+}
+
+
+============================================================
+FILE: tsconfig.web.json
+============================================================
+
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "include": [
+    "src/renderer/src/env.d.ts",
+    "src/renderer/src/**/*",
+    "src/renderer/src/**/*.tsx",
+    "src/preload/*.d.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@renderer/*": [
+        "src/renderer/src/*"
+      ]
+    }
+  }
+}
+
+
+============================================================
+FILE: .vscode\extensions.json
+============================================================
+
+{
+  "recommendations": ["dbaeumer.vscode-eslint"]
+}
+
+
+============================================================
+FILE: .vscode\launch.json
+============================================================
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Main Process",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-vite",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-vite.cmd"
+      },
+      "runtimeArgs": ["--sourcemap"],
+      "env": {
+        "REMOTE_DEBUGGING_PORT": "9222"
+      }
+    },
+    {
+      "name": "Debug Renderer Process",
+      "port": 9222,
+      "request": "attach",
+      "type": "chrome",
+      "webRoot": "${workspaceFolder}/src/renderer",
+      "timeout": 60000,
+      "presentation": {
+        "hidden": true
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug All",
+      "configurations": ["Debug Main Process", "Debug Renderer Process"],
+      "presentation": {
+        "order": 1
+      }
+    }
+  ]
+}
+
+
+============================================================
+FILE: .vscode\settings.json
+============================================================
+
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
+
+
+============================================================
+FILE: src\main\config.ts
+============================================================
+
+import fs from 'fs';
+import path from 'path';
+import { app } from 'electron';
+
+let config = {
+    email_reminder_interval_days: 14,
+    just_enrolled_window_days: 30,
+    warning_threshold_months: 18,
+    overdue_threshold_months: 24,
+    graduation_reminder_months: 6,
+    backup_retention_days: 30
+};
+
+const dataDir = path.join(app.getPath('userData'), 'data');
+const configPath = path.join(dataDir, 'config.json');
+
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+
+if (fs.existsSync(configPath)) {
+    try {
+        const fileData = fs.readFileSync(configPath, 'utf-8');
+        config = { ...config, ...JSON.parse(fileData) };
+    } catch(e) {
+        console.error("Failed to parse config.json, using defaults.", e);
+    }
+} else {
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+}
+
+export function getConfig() {
+    return config;
+}
+
+============================================================
+FILE: src\main\db.ts
+============================================================
+
+import Database, { Database as DatabaseType } from 'better-sqlite3';
+import path from 'path';
+import fs from 'fs';
+import { app } from 'electron';
+import { getConfig } from './config';
+
+const dataDir = path.join(app.getPath('userData'), 'data');
+if (!fs.existsSync(dataDir)) {
+	fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const dbPath = path.join(dataDir, 'database.sqlite');
+const db: DatabaseType = new Database(dbPath);
+db.pragma('journal_mode = WAL');
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        contact_number TEXT,
+        email TEXT,
+        campus TEXT DEFAULT 'Manila',
+        enroll_date TEXT,
+        status TEXT NOT NULL DEFAULT 'processing',
+        is_archived INTEGER NOT NULL DEFAULT 0,
+        comments TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS requirement_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT,
+        is_optional INTEGER NOT NULL DEFAULT 0,
+        display_order INTEGER NOT NULL DEFAULT 0,
+        is_deleted INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS requirement_aliases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        template_id INTEGER NOT NULL REFERENCES requirement_templates(id),
+        old_name TEXT NOT NULL,
+        changed_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS student_requirements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER NOT NULL REFERENCES students(id),
+        template_id INTEGER NOT NULL REFERENCES requirement_templates(id),
+        status TEXT NOT NULL DEFAULT 'na'
+            CHECK(status IN ('na','done','pending')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+`);
+
+function performBackup() {
+	try {
+		const config = getConfig();
+		const backupsDir = path.join(app.getPath('userData'), 'backups');
+
+		if (!fs.existsSync(backupsDir)) {
+			fs.mkdirSync(backupsDir, { recursive: true });
+		}
+
+		const today = new Date().toISOString().split('T')[0];
+		const backupFile = path.join(backupsDir, `backup-${today}.eteeap.backup`);
+
+		if (!fs.existsSync(backupFile)) {
+			const dump: Record<string, any> = {};
+			const tables = ['students', 'requirement_templates', 'requirement_aliases', 'student_requirements'];
+			for (const table of tables) {
+				dump[table] = db.prepare(`SELECT * FROM ${table}`).all();
+			}
+			fs.writeFileSync(backupFile, JSON.stringify(dump));
+
+			// Keep only last N backups
+			const retention = config.backup_retention_days || 30;
+			const files = fs.readdirSync(backupsDir).filter(f => f.startsWith('backup-') && f.endsWith('.eteeap.backup')).sort();
+			if (files.length > retention) {
+				for (let i = 0; i < files.length - retention; i++) {
+					fs.unlinkSync(path.join(backupsDir, files[i]));
+				}
+			}
+		}
+	} catch (err) {
+		console.error("Backup failed:", err);
+	}
+}
+performBackup();
+
+export function getDb(): DatabaseType {
+	return db;
+}
+
+export default db;
+
+============================================================
+FILE: src\main\index.ts
+============================================================
+
+import { app, shell } from 'electron';
+import { createTray } from './tray';
+import { startServer } from './server'
+
+const port = 2575;
+
+app.whenReady().then(async () => {
+	await startServer(port);
+	createTray(port);
+	shell.openExternal(`http://localhost:${port}`);
+});
+
+// The default is to quit. We subscribe to window-all-closed to override that,
+// wherein we *don't* quit, so it stays active in the tray.
+app.on('window-all-closed', () => {})
+// See tray.ts/createTray for how we handle quitting.
+
+============================================================
+FILE: src\main\server.ts
+============================================================
+
+import { app as electronApp } from 'electron';
+import express from 'express';
+import path from 'path';
+
+import studentsRouter from './routes/students';
+import dashboardRouter from './routes/dashboard';
+import requirementsRouter from './routes/requirements';
+import backupRouter from './routes/backup';
+import uploadsRouter from './routes/uploads'
+import './db'; 
+
+export async function startServer(port: number): Promise<void> {
+    const app = express();
+    app.use(express.json());
+    
+    app.use('/api/students', studentsRouter);
+    app.use('/api/dashboard', dashboardRouter);
+    app.use('/api/requirements', requirementsRouter);
+    app.use('/api/backup', backupRouter);
+    app.use('/api/uploads', uploadsRouter)
+
+    const rendererPath = path.join(__dirname, '../renderer');
+    app.use(express.static(rendererPath));
+
+    const uploadsPath = path.join(electronApp.getPath('userData'), 'data', 'uploads');
+    app.use('/uploads', express.static(uploadsPath));
+
+    app.get(/.*/, (_req, res) => {
+        res.sendFile(path.join(rendererPath, 'index.html'));
+    });
+
+    return new Promise((resolve) => {
+        app.listen(port, () => {
+            console.log(`Express server running at http://localhost:${port}`);
+            resolve();
+        });
+    });
+}
+
+============================================================
+FILE: src\main\tray.ts
+============================================================
+
+import { Tray, Menu, shell, app } from 'electron';
+import path from 'path';
+
+export function createTray(port: number): Tray {
+    const tray = new Tray(path.join(__dirname, '../../resources/icon.png'));
+    tray.setToolTip('ETEEAP Tracker');
+    tray.on('click', () => shell.openExternal(`http://localhost:${port}`));
+    
+    tray.setContextMenu(Menu.buildFromTemplate([
+        {
+            label: 'Open in browser',
+            click: () => shell.openExternal(`http://localhost:${port}`)
+        },
+        {
+            label: 'Quit',
+            click: () => app.quit()
+        },
+    ]));
+    
+    return tray;
+}
+
+============================================================
+FILE: src\main\routes\backup.ts
+============================================================
+
+import { Router, Request, Response } from 'express';
+import { getDb } from '../db';
+
+const router = Router();
+
+const tables = ['students', 'requirement_templates', 'requirement_aliases', 'student_requirements'];
+
+router.get('/export', (_req: Request, res: Response) => {
+    try {
+        const db = getDb();
+        const dump: Record<string, any> = {};
+        
+        for (const table of tables) {
+            dump[table] = db.prepare(`SELECT * FROM ${table}`).all();
+        }
+        
+        const today = new Date().toISOString().split('T')[0];
+        const filename = `backup-${today}.eteeap.backup`;
+        
+        res.setHeader('Content-disposition', `attachment; filename=${filename}`);
+        res.setHeader('Content-type', 'application/json');
+        res.send(JSON.stringify(dump));
+    } catch (err) {
+        console.error("Manual export failed:", err);
+        res.status(500).json({ error: 'Export failed' });
+    }
+});
+
+router.post('/import', (req: Request, res: Response): any => {
+    try {
+        const dump = req.body;
+        if (!dump || typeof dump !== 'object') {
+            return res.status(400).json({ error: 'Invalid backup content' });
+        }
+        
+        const db = getDb();
+        
+        db.transaction(() => {
+            for (const table of tables) {
+                if (dump[table] && Array.isArray(dump[table])) {
+                    db.prepare(`DELETE FROM ${table}`).run();
+                    
+                    if (dump[table].length > 0) {
+                        const cols = Object.keys(dump[table][0]);
+                        const placeholders = cols.map(() => '?').join(', ');
+                        const insertStmt = db.prepare(`INSERT INTO ${table} (${cols.join(', ')}) VALUES (${placeholders})`);
+                        
+                        for (const row of dump[table]) {
+                            const values = cols.map(c => row[c]);
+                            insertStmt.run(...values);
+                        }
+                    }
+                }
+            }
+        })();
+
+        res.json({ message: 'Database restored successfully from backup.' });
+    } catch(err) {
+        console.error("Manual import failed:", err);
+        res.status(500).json({ error: 'Import failed' });
+    }
+});
+
+export default router;
+
+============================================================
+FILE: src\main\routes\dashboard.ts
+============================================================
+
+import { Router, Request, Response } from 'express';
+import { getDb } from '../db';
+import { computeWarningFlags } from '../utils/studentFlags';
+import { getConfig } from '../config';
+
+const router = Router();
+
+router.get('/', (_req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const config = getConfig();
+
+        // 1. Stats
+        const statsRow = db.prepare(`
+            SELECT 
+                SUM(CASE WHEN is_archived = 0 AND status = 'processing' THEN 1 ELSE 0 END) as processing,
+                SUM(CASE WHEN is_archived = 0 AND status = 'waiting' THEN 1 ELSE 0 END) as waiting,
+                SUM(CASE WHEN is_archived = 0 AND status = 'enrolled' THEN 1 ELSE 0 END) as enrolled,
+                SUM(CASE WHEN is_archived = 0 AND status = 'graduating' THEN 1 ELSE 0 END) as graduating,
+                SUM(CASE WHEN is_archived = 1 THEN 1 ELSE 0 END) as archived
+            FROM students
+        `).get() as any;
+
+        // Compute Overdue via code for simplicity
+        const activeStudents = db.prepare("SELECT * FROM students WHERE is_archived = 0").all();
+        const activeFlags = activeStudents.map(computeWarningFlags);
+
+        const overdueCount = activeFlags.filter(f => f.isOverdue).length;
+
+        const stats = {
+            overdue: overdueCount,
+            processing: statsRow.processing || 0,
+            waiting: statsRow.waiting || 0,
+            enrolled: statsRow.enrolled || 0,
+            graduating: statsRow.graduating || 0,
+            archived: statsRow.archived || 0
+        };
+
+        // 2. Attention Required
+        const attentionList = activeFlags
+            .filter(f => f.isWarning || f.isOverdue)
+            .map(f => ({
+                id: f.id,
+                name: f.name,
+                status: f.isOverdue ? 'overdue' : 'warning',
+                months: f.months_elapsed
+            }))
+            .sort((a, b) => b.months - a.months);
+
+        // 3. Closest to be finished
+        const closestRaw = db.prepare(`
+            SELECT s.id, s.name, s.email, s.contact_number as phone,
+                SUM(CASE WHEN COALESCE(sr.status, 'pending') = 'done' THEN 1 ELSE 0 END) as done_count,
+                SUM(CASE WHEN COALESCE(sr.status, 'pending') = 'pending' THEN 1 ELSE 0 END) as pending_count
+            FROM students s
+            CROSS JOIN requirement_templates rt ON rt.is_deleted = 0
+            LEFT JOIN student_requirements sr ON s.id = sr.student_id AND sr.template_id = rt.id
+            WHERE s.is_archived = 0 
+            GROUP BY s.id
+            HAVING pending_count > 0
+            ORDER BY (CAST(done_count AS FLOAT) / (done_count + pending_count)) DESC
+            LIMIT 6
+        `).all() as any[];
+
+        const almostComplete = closestRaw.map(r => ({
+            id: r.id, name: r.name, email: r.email, phone: r.phone,
+            done_count: r.done_count, pending_count: r.pending_count,
+            total_count: r.done_count + r.pending_count,
+            progress_pct: Math.round((r.done_count / (r.done_count + r.pending_count)) * 100)
+        }));
+
+        // 4. Recent Enrollees
+        const recentEnrolleesRaw = db.prepare(`
+            SELECT id, name, email, contact_number as phone, enroll_date 
+            FROM students 
+            WHERE is_archived = 0 AND status = 'enrolled' AND enroll_date IS NOT NULL
+        `).all() as any[];
+
+        const now = new Date();
+        const recentEnrollees = recentEnrolleesRaw.map(r => {
+            const ed = new Date(r.enroll_date);
+            const daysAgo = Math.floor((now.getTime() - ed.getTime()) / (1000 * 3600 * 24));
+            return {
+                ...r,
+                daysAgo,
+                enroll_date_parsed: ed
+            };
+        }).filter(r => r.daysAgo <= config.just_enrolled_window_days && r.daysAgo >= 0)
+            .sort((a, b) => a.daysAgo - b.daysAgo)
+            .map(r => ({ id: r.id, name: r.name, email: r.email, phone: r.phone, daysAgo: r.daysAgo }));
+
+        res.json({
+            stats,
+            attentionList,
+            almostComplete,
+            recentEnrollees
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch dashboard data' });
+    }
+});
+
+export default router;
+
+
+============================================================
+FILE: src\main\routes\requirements.ts
+============================================================
+
+import { Router, Request, Response } from 'express';
+import { getDb } from '../db';
+
+const router = Router();
+
+router.get('/', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+        const is_deleted = req.query.is_deleted === '1' ? 1 : 0;
+        const templatesResult = db.prepare('SELECT id, name, description, is_optional, display_order FROM requirement_templates WHERE is_deleted = ? ORDER BY display_order ASC, id ASC').all(is_deleted) as any[];
+        
+        const templates = templatesResult.map(t => {
+            const aliases = db.prepare('SELECT old_name, changed_at FROM requirement_aliases WHERE template_id = ? ORDER BY changed_at DESC').all(t.id);
+            return {
+                ...t,
+                aliases: aliases.map((a: any) => a.old_name)
+            };
+        });
+        
+		res.json(templates);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to fetch requirements' });
+	}
+});
+
+router.post('/:id/restore', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+		const id = parseInt(req.params.id as string, 10);
+		if (isNaN(id)) {
+			return res.status(400).json({ error: 'Invalid template ID' });
+		}
+
+		db.prepare("UPDATE requirement_templates SET is_deleted = 0, updated_at = datetime('now') WHERE id = ?").run(id);
+		res.json({ message: 'Template restored' });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to restore template' });
+	}
+});
+
+router.delete('/:id/permanent', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+		const id = parseInt(req.params.id as string, 10);
+		if (isNaN(id)) {
+			return res.status(400).json({ error: 'Invalid template ID' });
+		}
+
+        db.transaction(() => {
+            db.prepare("DELETE FROM student_requirements WHERE template_id = ?").run(id);
+            db.prepare("DELETE FROM requirement_aliases WHERE template_id = ?").run(id);
+		    db.prepare("DELETE FROM requirement_templates WHERE id = ?").run(id);
+        })();
+		res.json({ message: 'Template permanently deleted' });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to delete template permanently' });
+	}
+});
+
+router.put('/reorder', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+		const { order } = req.body;
+		if (!Array.isArray(order)) {
+			return res.status(400).json({ error: 'Invalid order data' });
+		}
+
+        db.transaction(() => {
+            const stmt = db.prepare('UPDATE requirement_templates SET display_order = ? WHERE id = ?');
+            order.forEach((id, index) => {
+                stmt.run(index, id);
+            });
+        })();
+
+		res.json({ message: 'Order updated' });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to reorder templates' });
+	}
+});
+
+router.post('/', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+		const { name, description, is_optional } = req.body;
+
+		if (!name || !name.trim()) {
+			return res.status(400).json({ error: 'Name is required' });
+		}
+
+        const maxOrderRow = db.prepare('SELECT MAX(display_order) as m FROM requirement_templates').get() as any;
+        const nextOrder = (maxOrderRow.m || 0) + 1;
+
+		const stmt = db.prepare(`
+		    INSERT INTO requirement_templates (name, description, is_optional, display_order)
+		    VALUES (?, ?, ?, ?)
+	    `);
+
+		const result = stmt.run(name.trim(), description || null, is_optional ? 1 : 0, nextOrder);
+		const newTemplate = db.prepare('SELECT id, name, description, is_optional, display_order FROM requirement_templates WHERE id = ?').get(result.lastInsertRowid);
+		
+		res.status(201).json(newTemplate);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to create requirement template' });
+	}
+});
+
+router.put('/:id', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+		const id = parseInt(req.params.id as string, 10);
+		if (isNaN(id)) {
+			return res.status(400).json({ error: 'Invalid template ID' });
+		}
+
+		const { name, description, is_optional } = req.body;
+		const existing = db.prepare('SELECT * FROM requirement_templates WHERE id = ?').get(id) as any;
+		if (!existing) {
+			return res.status(404).json({ error: 'Template not found' });
+		}
+
+        const filters: string[] = [];
+        const values: any[] = [];
+
+        if (name !== undefined) {
+             filters.push('name = ?');
+             values.push(name.trim());
+        }
+        if (description !== undefined) {
+             filters.push('description = ?');
+             values.push(description);
+        }
+        if (is_optional !== undefined) {
+             filters.push('is_optional = ?');
+             values.push(is_optional ? 1 : 0);
+        }
+
+        if (filters.length > 0) {
+            db.transaction(() => {
+                if (name !== undefined && name.trim() !== existing.name) {
+                    db.prepare('INSERT INTO requirement_aliases (template_id, old_name) VALUES (?, ?)').run(id, existing.name);
+                }
+
+                filters.push("updated_at = datetime('now')");
+                values.push(id);
+                db.prepare(`UPDATE requirement_templates SET ${filters.join(', ')} WHERE id = ?`).run(...values);
+            })();
+        }
+
+		const updated = db.prepare('SELECT id, name, description, is_optional, display_order FROM requirement_templates WHERE id = ?').get(id);
+		res.json(updated);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to update template' });
+	}
+});
+
+router.delete('/:id', (req: Request, res: Response): any => {
+	try {
+        const db = getDb();
+		const id = parseInt(req.params.id as string, 10);
+		if (isNaN(id)) {
+			return res.status(400).json({ error: 'Invalid template ID' });
+		}
+
+		db.prepare("UPDATE requirement_templates SET is_deleted = 1, updated_at = datetime('now') WHERE id = ?").run(id);
+		res.json({ message: 'Template deleted' });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to delete template' });
+	}
+});
+
+export default router;
+
+
+============================================================
+FILE: src\main\routes\students.ts
+============================================================
+
+import { Router, Request, Response } from 'express';
+import { computeWarningFlags } from '../utils/studentFlags';
+import { getDb } from '../db';
+
+const router = Router();
+
+export const VALID_STATUSES = [
+    'processing',
+    'waiting',
+    'enrolled',
+    'graduating',
+    'archived',
+] as const;
+
+router.post('/', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const { name, contact_number, email, campus, enroll_date, status, comments } = req.body;
+
+        const trimmed = (name || '').trim();
+        if (!trimmed) return res.status(400).json({ error: 'Name is required' });
+
+        let finalStatus = 'processing';
+        if (status && typeof status === 'string' && (VALID_STATUSES as readonly string[]).includes(status)) {
+            finalStatus = status;
+        }
+		
+        const stmt = db.prepare(`
+            INSERT INTO students (name, contact_number, email, campus, enroll_date, status, comments)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        const result = stmt.run(
+            trimmed,
+            contact_number || null,
+            email || null,
+            campus || 'Manila',
+            enroll_date || null,
+            finalStatus,
+            (comments || '').trim()
+        );
+
+        const newStudent = db.prepare('SELECT * FROM students WHERE id = ?').get(result.lastInsertRowid);
+        res.status(201).json(computeWarningFlags(newStudent));
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to create student' });
+    }
+});
+
+router.get('/', (req: Request, res: Response) => {
+    try {
+        const db = getDb();
+        const { is_archived, status } = req.query;
+
+        let sql = 'SELECT * FROM students WHERE 1=1';
+        const filters: any[] = [];
+
+        sql += is_archived === '1' ? ' AND is_archived = 1' : ' AND is_archived = 0';
+
+        if (status && typeof status === 'string' && (VALID_STATUSES as readonly string[]).includes(status)) {
+            sql += ' AND status = ?';
+            filters.push(status);
+        }
+
+        sql += ' ORDER BY enroll_date ASC, name ASC';
+
+        const students = db.prepare(sql).all(...filters).map((s: any) => {
+            const student = computeWarningFlags(s);
+            const stats = db.prepare(`
+                SELECT
+                    SUM(CASE WHEN COALESCE(sr.status, 'pending') = 'done' THEN 1 ELSE 0 END) as done_count,
+                    SUM(CASE WHEN COALESCE(sr.status, 'pending') = 'pending' THEN 1 ELSE 0 END) as pending_docs,
+                    SUM(CASE WHEN COALESCE(sr.status, 'pending') != 'na' THEN 1 ELSE 0 END) as total_docs
+                FROM requirement_templates rt
+                LEFT JOIN student_requirements sr ON rt.id = sr.template_id AND sr.student_id = ?
+                WHERE rt.is_deleted = 0
+            `).get(student.id) as { done_count: number, pending_docs: number, total_docs: number };
+
+            return {
+                ...student,
+                done_count: stats.done_count || 0,
+                pending_docs: stats.pending_docs || 0,
+                total_docs: stats.total_docs || 0
+            };
+        });
+        res.json(students);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch students' });
+    }
+});
+
+router.get('/:id', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid student ID' });
+
+        const student = db.prepare('SELECT * FROM students WHERE id = ?').get(id) as any;
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+
+        res.json(computeWarningFlags(student));
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch student' });
+    }
+});
+
+router.put('/:id', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid student ID' });
+
+        const existing = db.prepare('SELECT * FROM students WHERE id = ?').get(id) as any;
+        if (!existing) return res.status(404).json({ error: 'Student not found' });
+
+        const { name, contact_number, email, campus, enroll_date, status, comments } = req.body;
+        const filters: string[] = [];
+        const values: any[] = [];
+
+        if (name !== undefined && typeof name === 'string' && name.trim() !== '') {
+            filters.push('name = ?');
+            values.push(name.trim());
+        }
+        if (contact_number !== undefined) {
+            filters.push('contact_number = ?');
+            values.push(contact_number || null);
+        }
+        if (email !== undefined) {
+            filters.push('email = ?');
+            values.push(email || null);
+        }
+		if (campus !== undefined) {
+			filters.push('campus = ?');
+            values.push(campus);
+		}
+        if (enroll_date !== undefined) {
+            filters.push('enroll_date = ?');
+            values.push(enroll_date || null);
+        }
+        if (status !== undefined && typeof status === 'string') {
+            if (!(VALID_STATUSES as readonly string[]).includes(status)) {
+                return res.status(400).json({ error: `Invalid status. Valid values: ${VALID_STATUSES.join(', ')}` });
+            }
+            filters.push('status = ?');
+            values.push(status);
+        }
+        if (comments !== undefined && typeof comments === 'string') {
+            filters.push('comments = ?');
+            values.push(comments.trim());
+        }
+
+        db.transaction(() => {
+            if (filters.length > 0) {
+                filters.push("updated_at = datetime('now')");
+                const sql = `UPDATE students SET ${filters.join(', ')} WHERE id = ?`;
+                values.push(id);
+                db.prepare(sql).run(...values);
+            }
+        })();
+
+        const updated = db.prepare('SELECT * FROM students WHERE id = ?').get(id);
+        res.json(computeWarningFlags(updated));
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update student' });
+    }
+});
+
+router.delete('/:id', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid student ID' });
+
+        db.prepare("UPDATE students SET is_archived = 1, updated_at = datetime('now') WHERE id = ?").run(id);
+        const archived = db.prepare('SELECT * FROM students WHERE id = ?').get(id);
+        res.json({ message: 'Student archived', student: computeWarningFlags(archived) });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to archive student' });
+    }
+});
+
+router.post('/:id/unarchive', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid student ID' });
+
+        db.prepare("UPDATE students SET is_archived = 0, updated_at = datetime('now') WHERE id = ?").run(id);
+        res.json({ message: 'Student unarchived' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to unarchive student' });
+    }
+});
+
+router.delete('/:id/permanent', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid student ID' });
+
+        db.transaction(() => {
+            db.prepare('DELETE FROM student_requirements WHERE student_id = ?').run(id);
+            db.prepare('DELETE FROM students WHERE id = ?').run(id);
+        })();
+        res.json({ message: 'Student permanently deleted' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to permanently delete student' });
+    }
+});
+
+router.get('/:id/requirements', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        
+        const rows = db.prepare(`
+            SELECT rt.id as template_id, rt.name, rt.description,
+                   COALESCE(sr.status, 'pending') as status
+            FROM requirement_templates rt
+            LEFT JOIN student_requirements sr ON rt.id = sr.template_id AND sr.student_id = ?
+            WHERE rt.is_deleted = 0
+            ORDER BY rt.display_order ASC, rt.id ASC
+        `).all(id);
+        
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch requirements' });
+    }
+});
+
+router.put('/:id/requirements', (req: Request, res: Response): any => {
+    try {
+        const db = getDb();
+        const id = parseInt(req.params.id as string, 10);
+        const { requirements } = req.body;
+
+        db.transaction(() => {
+            for (const req of requirements) {
+                db.prepare('DELETE FROM student_requirements WHERE student_id = ? AND template_id = ?').run(id, req.template_id);
+                db.prepare('INSERT INTO student_requirements (student_id, template_id, status) VALUES (?, ?, ?)').run(id, req.template_id, req.status);
+            }
+        })();
+        
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update requirements' });
+    }
+});
+
+export default router;
+
+============================================================
+FILE: src\main\routes\uploads.ts
+============================================================
+
+import { Router, Request, Response } from 'express';
+import multer from 'multer';
+import crypto from 'crypto';
+import path from 'path';
+import fs from 'fs';
+import { app } from 'electron';
+
+const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.post('/students/:studentId/requirements/:reqId', upload.single('file'), (req: Request, res: Response): any => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No file provided' });
+
+        const { studentId, reqId } = req.params;
+        const fileBuffer = req.file.buffer;
+
+        const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+        const ext = path.extname(req.file.originalname);
+
+        const baseName = path.basename(req.file.originalname, ext);
+        const fileName = `${baseName}_${hash.substring(0, 8)}${ext}`;
+
+        const uploadDir = path.join(app.getPath('userData'), 'data', 'uploads', 'students', studentId as string, reqId as string);
+
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const filePath = path.join(uploadDir, fileName);
+        
+        if (!fs.existsSync(filePath)) {
+            fs.writeFileSync(filePath, fileBuffer);
+        }
+
+        res.json({ message: 'File uploaded successfully', fileName, url: `/uploads/students/${studentId}/${reqId}/${fileName}` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'File upload failed' });
+    }
+});
+
+router.get('/students/:studentId/requirements/:reqId', (req: Request, res: Response): any => {
+    try {
+        const { studentId, reqId } = req.params;
+        const uploadDir = path.join(app.getPath('userData'), 'data', 'uploads', 'students', studentId as string, reqId as string);
+
+        if (!fs.existsSync(uploadDir)) {
+            return res.json([]);
+        }
+
+        const files = fs.readdirSync(uploadDir).map(file => ({
+            name: file,
+            url: `/uploads/students/${studentId}/${reqId}/${file}`
+        }));
+
+        res.json(files);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch files' });
+    }
+});
+
+export default router;
+
+============================================================
+FILE: src\main\utils\studentFlags.ts
+============================================================
+
+import { getConfig } from '../config';
+
+export function computeWarningFlags(student: any) {
+    const flags = {
+        isWarning: false,
+        isOverdue: false,
+        months_elapsed: 0
+    };
+
+    if (!student?.enroll_date || student.status !== 'enrolled') {
+        return { ...student, ...flags };
+    }
+
+    const enrollDate = new Date(student.enroll_date);
+    
+    if (isNaN(enrollDate.getTime())) {
+        return { ...student, ...flags };
+    }
+
+    const now = new Date();
+    const monthDifference =
+        (now.getFullYear() - enrollDate.getFullYear()) * 12 +
+        (now.getMonth() - enrollDate.getMonth());
+
+    const config = getConfig();
+    flags.isWarning = monthDifference >= config.warning_threshold_months && monthDifference < config.overdue_threshold_months;
+    flags.isOverdue = monthDifference >= config.overdue_threshold_months;
+    flags.months_elapsed = monthDifference;
+
+    return { ...student, ...flags };
+}
+
+============================================================
+FILE: src\preload\index.d.ts
+============================================================
+
+import { ElectronAPI } from '@electron-toolkit/preload'
+
+declare global {
+  interface Window {
+    electron: ElectronAPI
+    api: unknown
+  }
+}
+
+
+============================================================
+FILE: src\preload\index.ts
+============================================================
+
+import { contextBridge } from 'electron'
+import { electronAPI } from '@electron-toolkit/preload'
+
+const api = {}
+
+if (process.contextIsolated) {
+  try {
+    contextBridge.exposeInMainWorld('electron', electronAPI)
+    contextBridge.exposeInMainWorld('api', api)
+  } catch (error) {
+    console.error(error)
+  }
+} else {
+  // @ts-ignore (define in dts)
+  window.electron = electronAPI
+  // @ts-ignore (define in dts)
+  window.api = api
+}
+
+
+============================================================
+FILE: src\renderer\index.html
+============================================================
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Electron</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    />
+  </head>
+
+  <body>
+    <div id="root"><p>Loading...</p></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+
+============================================================
+FILE: src\renderer\src\App.tsx
+============================================================
+
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './assets/styles.css';
+
+import AppLayout from './components/AppLayout';
+import Dashboard from './pages/Dashboard';
+import StudentList from './pages/StudentList';
+import Archive from './pages/Archive';
+import RequirementManager from './pages/RequirementManager';
+import Settings from './pages/Settings';
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/students" element={<StudentList />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/requirements" element={<RequirementManager />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+
+============================================================
+FILE: src\renderer\src\env.d.ts
+============================================================
+
+/// <reference types="vite/client" />
+
+
+============================================================
+FILE: src\renderer\src\index.css
+============================================================
+
+@import "tailwindcss";
+
+
+============================================================
+FILE: src\renderer\src\main.tsx
+============================================================
+
+import './index.css'
+
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+)
+
+
+============================================================
+FILE: src\renderer\src\assets\styles.css
+============================================================
+
+body { background-color: #f8f9fa; font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+.sidebar-narrow { width: 85px; position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000; background-color: #212529; }
+.logo-placeholder { height: 35px; width: 35px; background-color: #3e444a; border-radius: 6px; margin: 0 auto; }
+.nav-icon-link { font-size: 0.7rem; text-align: center; color: #adb5bd; text-decoration: none; padding: 12px 0; display: block; border-radius: 6px; line-height: 1.2; }
+.nav-icon-link i { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+.nav-icon-link.active, .nav-icon-link:hover { color: #fff; background-color: #2b3035; }
+.main-workspace { margin-left: 85px; }
+.grad-danger { background: linear-gradient(to right, #ffffff, #fcebeb); }
+.grad-warning { background: linear-gradient(to right, #ffffff, #fffdf0); }
+.grad-primary { background: linear-gradient(to right, #ffffff, #f0f7ff); }
+.grad-success { background: linear-gradient(to right, #ffffff, #eefcf5); }
+.grad-info { background: linear-gradient(to right, #ffffff, #f0fbfd); }
+.grad-secondary { background: linear-gradient(to right, #ffffff, #f1f2f4); }
+.clickable-row { cursor: pointer; transition: background-color 0.2s ease; }
+.clickable-row:hover { background-color: rgba(0,0,0,0.05) !important; }
+.muted-table-row { opacity: 0.75; }
+
+
+============================================================
+FILE: src\renderer\src\components\AppLayout.tsx
+============================================================
+
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+
+export default function AppLayout() {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <div className="sidebar-narrow d-flex flex-column justify-content-between py-3 px-2 border-end">
+        <div className="d-flex flex-column gap-3">
+          <div className="d-flex justify-content-center mb-1">
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              style={{ width: '40px', height: '40px', cursor: 'pointer', borderRadius: '6px' }} 
+              onClick={() => navigate('/dashboard')} 
+              onError={(e) => {
+                e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"><rect width="40" height="40" fill="%233e444a" rx="6"/><text x="50%" y="54%" fill="%23ffffff" font-family="sans-serif" font-weight="bold" font-size="20" text-anchor="middle" dominant-baseline="middle">UE</text></svg>';
+              }}
+            />
+          </div>
+          <NavLink to="/dashboard" className={({ isActive }) => `nav-icon-link ${isActive ? 'active' : ''}`}>
+            <i className="bi bi-speedometer2"></i>Dashboard
+          </NavLink>
+          <NavLink to="/students" className={({ isActive }) => `nav-icon-link ${isActive ? 'active' : ''}`}>
+            <i className="bi bi-people"></i>Student<br />Directory
+          </NavLink>
+          <NavLink to="/archive" className={({ isActive }) => `nav-icon-link ${isActive ? 'active' : ''}`}>
+            <i className="bi bi-archive"></i>Student<br />Archive
+          </NavLink>
+          <NavLink to="/requirements" className={({ isActive }) => `nav-icon-link ${isActive ? 'active' : ''}`}>
+            <i className="bi bi-card-checklist"></i>Reqs.<br />Manager
+          </NavLink>
+          <NavLink to="/settings" className={({ isActive }) => `nav-icon-link ${isActive ? 'active' : ''}`}>
+            <i className="bi bi-gear"></i>Settings
+          </NavLink>
+        </div>
+        <div className="text-center text-muted" style={{ fontSize: '0.65rem' }}>v1.0</div>
+      </div>
+
+      <div className="main-workspace p-4">
+        <Outlet />
+      </div>
+    </>
+  );
+}
+
+
+============================================================
+FILE: src\renderer\src\components\StudentDrawer.tsx
+============================================================
+
+import { Offcanvas, Form, Button, InputGroup, Toast, ToastContainer, ProgressBar } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+
+const TOAST_WAIT_DURATION: number = 1200
+const ANOTHER_MAGIC_NUMBER: number = 4000
+
+export default function StudentDrawer({ show, handleClose, student, onSave }) {
+  const [formData, setFormData] = useState<any>({});
+  const [requirements, setRequirements] = useState<any[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', variant: 'success' });
+  const [reqFiles, setReqFiles] = useState<Record<number, any[]>>({});
+
+  const refreshRequirements = async () => {
+    try {
+      if (student?.id) {
+        const res = await fetch(`/api/students/${student.id}/requirements`);
+        const data = await res.json();
+        setRequirements(data);
+
+        const fileData = {};
+        for (const req of data) {
+          const fRes = await fetch(`/api/uploads/students/${student.id}/requirements/${req.template_id}`);
+          fileData[req.template_id] = await fRes.json();
+        }
+        setReqFiles(fileData);
+      } else {
+        const res = await fetch(`/api/requirements`);
+        const data = await res.json();
+        setRequirements(data.map((r: any) => ({
+          template_id: r.id, name: r.name, description: r.description,
+          status: 'pending'
+        })));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    if (student) {
+      setFormData(student);
+      refreshRequirements();
+    }
+  }, [student]);
+
+  if (!student) return null;
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRequirementChange = (templateId, newStatus) => {
+    setRequirements(prev => prev.map(r => r.template_id === templateId ? { ...r, status: newStatus } : r));
+  };
+
+  const setAllStatus = (status) => {
+    setRequirements(prev => prev.map(r => ({ ...r, status })));
+  }
+
+  const handleSaveInternal = async () => {
+    setSaving(true);
+    setToast({ show: false, message: '', variant: 'success' });
+
+    try {
+      if (!formData.name?.trim()) throw new Error("Student Name is required.");
+      if (['enrolled', 'graduating'].includes(formData.status) && !formData.enroll_date) {
+        throw new Error("Enrollment date is required when enrolled or Graduating.");
+      }
+      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        throw new Error("Invalid email address format.");
+      }
+
+      let sid = student?.id;
+      if (sid) {
+        const res = await fetch(`/api/students/${sid}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (!res.ok) throw new Error((await res.json()).error || 'Failed to update student');
+      } else {
+        const res = await fetch(`/api/students`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (!res.ok) throw new Error((await res.json()).error || 'Failed to create student');
+        const created = await res.json();
+        sid = created.id;
+      }
+
+      await fetch(`/api/students/${sid}/requirements`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requirements: requirements.map(r => ({ template_id: r.template_id, status: r.status })) })
+      });
+
+      setToast({ show: true, message: 'Student data saved successfully.', variant: 'success' });
+
+      setTimeout(() => {
+        setSaving(false);
+        onSave();
+      }, TOAST_WAIT_DURATION);
+
+    } catch (e: any) {
+      setToast({ show: true, message: e.message, variant: 'danger' });
+      setSaving(false);
+    }
+  };
+
+  const handleFileUpload = async (templateId, file) => {
+    if (!file || !student?.id) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`/api/uploads/students/${student.id}/requirements/${templateId}`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        setToast({ show: true, message: 'File uploaded.', variant: 'success' });
+        const fRes = await fetch(`/api/uploads/students/${student.id}/requirements/${templateId}`);
+        const updatedList = await fRes.json();
+        setReqFiles(prev => ({ ...prev, [templateId]: updatedList }));
+      }
+    } catch (e) {
+      console.error(e);
+      setToast({ show: true, message: 'Upload failed.', variant: 'danger' });
+    }
+  };
+
+  return (
+    <Offcanvas show={show} onHide={handleClose} placement="end" style={{ width: '50vw', minWidth: '520px', backgroundColor: '#fafafa' }}>
+      <Offcanvas.Header closeButton closeVariant="white" className="bg-dark text-white p-3">
+        <div>
+          <h5 className="fw-bold mb-0">{formData.name || (formData.id ? '?' : 'New Student')}</h5>
+          <span className="text-secondary small">ID: {formData.id || '—'}</span>
+        </div>
+      </Offcanvas.Header>
+
+      {saving && <ProgressBar animated now={100} style={{ height: '4px', borderRadius: 0 }} />}
+
+      <Offcanvas.Body className="p-4 position-relative">
+        <ToastContainer position="top-end" className="p-3" style={{ zIndex: 1060 }}>
+          <Toast
+            show={toast.show}
+            onClose={() => setToast({ ...toast, show: false })}
+            bg={toast.variant}
+            delay={ANOTHER_MAGIC_NUMBER}
+            autohide
+          >
+            <Toast.Body className="text-white fw-semibold">
+              {toast.variant === 'success' && <i className="bi bi-check-circle-fill me-2"></i>}
+              {toast.variant === 'danger' && <i className="bi bi-exclamation-triangle-fill me-2"></i>}
+              {toast.message}
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
+
+        {/* Details */}
+        <div className="mb-4">
+          <h6 className="fw-bold text-uppercase text-muted border-bottom pb-2 mb-3" style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+            Student Details
+          </h6>
+
+          <div className="row g-3 mb-3">
+            <div className="col-8">
+              <Form.Label className="small fw-bold text-secondary mb-1">Name</Form.Label>
+              <Form.Control name="name" value={formData.name || ''} onChange={handleChange} />
+            </div>
+            <div className="col-4">
+              <Form.Label className="small fw-bold text-secondary mb-1">Campus</Form.Label>
+              <InputGroup>
+                <InputGroup.Text className="bg-light"><i className="bi bi-geo-alt text-muted"></i></InputGroup.Text>
+                <Form.Select name="campus" value={formData.campus || 'Manila'} onChange={handleChange} className="fw-semibold">
+                  <option value="Manila">Manila</option>
+                  <option value="Caloocan">Caloocan</option>
+                </Form.Select>
+              </InputGroup>
+            </div>
+          </div>
+
+          <div className="row g-3 mb-3">
+            <div className="col-6">
+              <Form.Label className="small fw-bold text-secondary mb-1">Program Status</Form.Label>
+              <InputGroup>
+                <InputGroup.Text className="bg-light"><i className="bi bi-mortarboard text-muted"></i></InputGroup.Text>
+                <Form.Select name="status" value={formData.status || ''} onChange={handleChange}>
+                  <option value="processing">Processing</option>
+                  <option value="waiting">Waiting for Enrollment</option>
+                  <option value="enrolled">Enrolled</option>
+                  <option value="graduating">Graduating</option>
+                </Form.Select>
+              </InputGroup>
+            </div>
+            <div className="col-6">
+              <Form.Label className="small fw-bold text-secondary mb-1">
+                Enrollment Date {Array.isArray(['enrolled', 'graduating']) && ['enrolled', 'graduating'].includes(formData.status) && <span className="text-danger">*</span>}
+              </Form.Label>
+              <Form.Control
+                type="date"
+                name="enroll_date"
+                value={formData.enroll_date || ''}
+                onChange={handleChange}
+                required={['enrolled', 'graduating'].includes(formData.status)}
+                className={`border-${(!formData.enroll_date && ['enrolled', 'graduating'].includes(formData.status)) ? 'danger' : 'light-subtle'}`}
+              />
+            </div>
+          </div>
+
+          <div className="row g-3">
+            <div className="col-6">
+              <Form.Label className="small fw-bold text-secondary mb-1">Email Address</Form.Label>
+              <InputGroup>
+                <InputGroup.Text className="bg-light"><i className="bi bi-envelope text-muted"></i></InputGroup.Text>
+                <Form.Control type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="username@email.com" />
+              </InputGroup>
+            </div>
+            <div className="col-6">
+              <Form.Label className="small fw-bold text-secondary mb-1">Contact Number</Form.Label>
+              <InputGroup>
+                <InputGroup.Text className="bg-light"><i className="bi bi-telephone text-muted"></i></InputGroup.Text>
+                <Form.Control type="text" name="contact_number" value={formData.contact_number || ''} onChange={handleChange} />
+              </InputGroup>
+            </div>
+          </div>
+        </div>
+
+        {/* Requirements */}
+        <div className="mb-4">
+          <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h6 className="fw-bold text-uppercase text-muted mb-0" style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+              Requirement Checklist
+            </h6>
+            <div className="d-flex gap-2">
+              <Button variant="outline-success" size="sm" className="py-0 px-2" style={{ fontSize: '0.75rem' }} onClick={() => setAllStatus('done')}>Set all to Done</Button>
+              <Button variant="outline-danger" size="sm" className="py-0 px-2" style={{ fontSize: '0.75rem' }} onClick={() => setAllStatus('pending')}>Set all to Pending</Button>
+            </div>
+          </div>
+
+          <div className="list-group list-group-flush border rounded bg-white">
+            {requirements.map((req, i) => (
+              <div key={i} className="list-group-item p-3" style={{ fontSize: '0.85rem' }}>
+                <div className="d-flex align-items-center justify-content-between mb-2">
+                  <div className="pe-2" style={{ maxWidth: '55%' }}>
+                    <span className="fw-bold text-dark d-block">{req.name}</span>
+                    <small className="text-muted">{req.description}</small>
+                  </div>
+                  <div className="d-flex align-items-center gap-3">
+                    <Form.Check inline type="radio" label={<span className="text-muted small">Not required</span>} name={`req-${req.template_id}`} checked={req.status === 'na'} onChange={() => handleRequirementChange(req.template_id, 'na')} />
+                    <Form.Check inline type="radio" label={<span className="text-success fw-bold small">Done</span>} name={`req-${req.template_id}`} checked={req.status === 'done'} onChange={() => handleRequirementChange(req.template_id, 'done')} />
+                    <Form.Check inline type="radio" label={<span className="text-danger fw-bold small">Pending</span>} name={`req-${req.template_id}`} checked={req.status === 'pending'} onChange={() => handleRequirementChange(req.template_id, 'pending')} />
+                  </div>
+                </div>
+
+                {/* File attachment*/}
+                {student?.id && (
+                  <div className="bg-light p-2 rounded border border-light-subtle d-flex align-items-center gap-3 flex-wrap">
+                    {/* Hidden file input */}
+                    <input
+                      type="file"
+                      id={`file-upload-${req.template_id}`}
+                      className="d-none"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) handleFileUpload(req.template_id, e.target.files[0]);
+                        e.target.value = ''; 
+                      }}
+                    />
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      className="py-0 px-2"
+                      onClick={() => document.getElementById(`file-upload-${req.template_id}`)?.click()}
+                    >
+                      <i className="bi bi-paperclip me-1"></i> Attach
+                    </Button>
+
+                    {reqFiles[req.template_id]?.map((file, idx) => (
+                      <a
+                        key={idx}
+                        href={file.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="badge bg-white text-dark border text-decoration-none"
+                      >
+                        <i className="bi bi-file-earmark-text me-1 text-primary"></i>
+                        {file.name.length > 25 ? file.name.substring(0, 15) + '...' + file.name.split('.').pop() : file.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Comments */}
+        <div>
+          <h6 className="fw-bold text-uppercase text-muted border-bottom pb-2 mb-3" style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+            Remarks
+          </h6>
+          <Form.Control as="textarea" rows={6} className="bg-light" name="comments" value={formData.comments || ''} onChange={handleChange} placeholder="Notes, comments, remarks, details..." />
+        </div>
+      </Offcanvas.Body>
+
+      <div className="bg-white border-top p-3 d-flex justify-content-end gap-2">
+        <Button variant="light" className="border btn-sm" onClick={handleClose} disabled={saving}>Cancel</Button>
+        <Button variant="dark" className="btn-sm px-4" onClick={handleSaveInternal} disabled={saving}>
+          {saving ? 'Saving...' : 'Save changes'}
+        </Button>
+      </div>
+    </Offcanvas>
+  );
+}
+
+============================================================
+FILE: src\renderer\src\components\Versions.tsx
+============================================================
+
+import { useState } from 'react'
+
+function Versions(): React.JSX.Element {
+  const [versions] = useState(window.electron.process.versions)
+
+  return (
+    <ul className="versions">
+      <li className="electron-version">Electron v{versions.electron}</li>
+      <li className="chrome-version">Chromium v{versions.chrome}</li>
+      <li className="node-version">Node v{versions.node}</li>
+    </ul>
+  )
+}
+
+export default Versions
+
+
+============================================================
+FILE: src\renderer\src\pages\Archive.tsx
+============================================================
+
+import { useState, useEffect, useMemo } from 'react';
+import { Card, Table, Form, Button, InputGroup, Pagination } from 'react-bootstrap';
+import Fuse from 'fuse.js';
+
+export default function Archive() {
+  const [archivedStudents, setArchivedStudents] = useState<any[]>([]);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const fetchArchive = () => {
+    fetch('/api/students?is_archived=1')
+      .then(res => res.json())
+      .then(data => setArchivedStudents(data))
+      .catch(console.error);
+  }
+
+  useEffect(() => {
+    fetchArchive();
+  }, []);
+
+  const filteredStudents = useMemo(() => {
+    let result = archivedStudents;
+
+    if (filterStatus) {
+      result = result.filter(s => s.status === filterStatus);
+    }
+
+    let searchActive = false;
+    if (searchQuery.trim()) {
+      searchActive = true;
+      const fuse = new Fuse(result, {
+        keys: ['name', 'email', 'contact_number'],
+        threshold: 0.3,
+      });
+      result = fuse.search(searchQuery).map(r => r.item);
+    }
+
+    if (sortBy !== 'relevance' || !searchActive) {
+      result = [...result].sort((a, b) => {
+        if (sortBy === 'enroll_date_asc' || sortBy === 'relevance') {
+          if (!a.enroll_date && b.enroll_date) return 1;
+          if (a.enroll_date && !b.enroll_date) return -1;
+          if (a.enroll_date === b.enroll_date) return a.name.localeCompare(b.name);
+          return new Date(a.enroll_date).getTime() - new Date(b.enroll_date).getTime();
+        } else if (sortBy === 'enroll_date_desc') {
+          if (!a.enroll_date && b.enroll_date) return 1;
+          if (a.enroll_date && !b.enroll_date) return -1;
+          if (a.enroll_date === b.enroll_date) return a.name.localeCompare(b.name);
+          return new Date(b.enroll_date).getTime() - new Date(a.enroll_date).getTime();
+        } else if (sortBy === 'name_asc') {
+          return a.name.localeCompare(b.name);
+        }
+        return 0;
+      });
+    }
+
+    return result;
+  }, [archivedStudents, searchQuery, filterStatus, sortBy]);
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleUnarchive = async (id) => {
+    await fetch(`/api/students/${id}/unarchive`, { method: 'POST' });
+    fetchArchive();
+  }
+
+  const handlePermanentDelete = async (id) => {
+    if (!confirm("WARNING: This will permanently delete this student, their requirements, and their comments. Are you entirely sure?")) return;
+    if (!confirm("Double confirmation: Delete PERMANENTLY?")) return;
+    await fetch(`/api/students/${id}/permanent`, { method: 'DELETE' });
+    fetchArchive();
+  }
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h1 className="h4 fw-bold text-dark mb-1">Student Archive</h1>
+      </div>
+
+      <div className="row justify-content-center">
+        <div className="col-12" style={{ width: '80%' }}>
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Body className="py-3">
+              <div className="row g-2 align-items-center">
+                <div className="col-md-5">
+                  <InputGroup>
+                    <InputGroup.Text className="bg-white border-end-0 text-muted"><i className="bi bi-search"></i></InputGroup.Text>
+                    <Form.Control className="border-start-0" placeholder="Search by name, email, phone..." value={searchQuery} onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }} />
+                  </InputGroup>
+                </div>
+                <div className="col-md-3">
+                  <InputGroup>
+                    <InputGroup.Text className="bg-light text-muted small">Filter by...</InputGroup.Text>
+                    <Form.Select value={filterStatus} onChange={e => { setFilterStatus(e.target.value); setCurrentPage(1); }}>
+                      <option value="">All statuses</option>
+                      <option value="processing">Processing</option>
+                      <option value="waiting">Waiting for Enrollment</option>
+                      <option value="enrolled">Enrolled</option>
+                      <option value="graduating">Graduating</option>
+                    </Form.Select>
+                  </InputGroup>
+                </div>
+                <div className="col-md-4">
+                  <InputGroup>
+                    <InputGroup.Text className="bg-light text-muted small">Sort by...</InputGroup.Text>
+                    <Form.Select value={sortBy} onChange={e => { setSortBy(e.target.value); setCurrentPage(1); }}>
+                      <option value="relevance">Relevance</option>
+                      <option value="enroll_date_asc">Enroll date (earliest first)</option>
+                      <option value="enroll_date_desc">Enroll date (latest first)</option>
+                      <option value="name_asc">Name (A-Z)</option>
+                    </Form.Select>
+                  </InputGroup>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </div>
+      </div>
+
+      <Card className="border-0 shadow-sm bg-white">
+        <div className="table-responsive">
+          <Table hover className="mb-0 align-middle text-secondary" style={{ fontSize: '0.9rem' }}>
+            <thead className="table-secondary text-uppercase text-muted" style={{ fontSize: '0.75rem' }}>
+              <tr>
+                <th className="ps-3" style={{ width: '20%' }}>Student</th>
+                <th style={{ width: '10%' }}>Contact No</th>
+                <th style={{ width: '10%' }}>Campus</th>
+                <th style={{ width: '20%' }}>Duration Active</th>
+                <th style={{ width: '10%' }}>Last Status</th>
+                <th className="text-end pe-3" style={{ width: '30%' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedStudents.map(student => (
+                <tr key={student.id} className="muted-table-row">
+                  <td className="ps-3 text-secondary">
+                    <div className="fw-bold text-muted">{student.name}</div>
+                    <span className="text-muted small">{student.email || '—'}</span>
+                  </td>
+                  <td><small>{student.contact_number || '—'}</small></td>
+                  <td><small className="fw-semibold">{student.campus || 'Manila'}</small></td>
+                  <td>
+                    {student.enroll_date ? (
+                      <>
+                        <div className="text-muted fw-semibold">{student.months_elapsed} months active</div>
+                        <small className="text-muted">Enrolled on {student.enroll_date}</small>
+                      </>
+                    ) : <span className="text-muted small fst-italic">—</span>}
+                  </td>
+                  <td><span className="text-muted small text-capitalize">{student.status}</span></td>
+                  <td className="text-end pe-3">
+                    <div className="d-inline-flex gap-1">
+                      <Button variant="outline-secondary" size="sm" onClick={() => handleUnarchive(student.id)}>Unarchive</Button>
+                      <Button variant="danger" size="sm" className="text-white" onClick={() => handlePermanentDelete(student.id)}>Delete</Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {paginatedStudents.length === 0 && (
+                <tr><td colSpan={6} className="text-center py-4 text-muted">No archived students.</td></tr>
+              )}
+            </tbody>
+          </Table>
+        </div>
+      </Card>
+
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-4">
+          <Pagination>
+            <Pagination.Prev disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} />
+            {[...Array(totalPages)].map((_, idx) => (
+              <Pagination.Item key={idx + 1} active={idx + 1 === currentPage} onClick={() => setCurrentPage(idx + 1)}>
+                {idx + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} />
+          </Pagination>
+        </div>
+      )}
+    </>
+  );
+}
+
+
+============================================================
+FILE: src\renderer\src\pages\Dashboard.tsx
+============================================================
+
+import { useState, useEffect } from 'react';
+import { Card, Table, Badge, ProgressBar } from 'react-bootstrap';
+import StudentDrawer from '../components/StudentDrawer';
+
+export default function Dashboard() {
+  const [stats, setStats] = useState({ overdue: 0, processing: 0, waiting: 0, enrolled: 0, graduating: 0, archived: 0 });
+  const [attentionList, setAttentionList] = useState<any[]>([]);
+  const [almostComplete, setAlmostComplete] = useState<any[]>([]);
+  const [recentEnrollees, setRecentEnrollees] = useState<any[]>([]);
+
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  const fetchDashboard = () => {
+    fetch('/api/dashboard')
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Failed to fetch dashboard:', data.error);
+          return;
+        }
+        setStats(data.stats || { overdue: 0, processing: 0, waiting: 0, enrolled: 0, graduating: 0, archived: 0 });
+        setAttentionList(data.attentionList || []);
+        setAlmostComplete(data.almostComplete || []);
+        setRecentEnrollees(data.recentEnrollees || []);
+      })
+      .catch(console.error);
+  };
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  const handleRowClick = async (id: number) => {
+    try {
+      const res = await fetch(`/api/students/${id}`);
+      const data = await res.json();
+      if (data.id) {
+        setSelectedStudent(data);
+        setShowDrawer(true);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const closeDrawer = () => {
+    setShowDrawer(false);
+    setSelectedStudent(null);
+    fetchDashboard();
+  };
+
+  return (
+    <>
+      <div className="mb-4">
+        <h1 className="h4 fw-bold text-dark">ETEEAP Dashboard</h1>
+      </div>
+
+      {/* Attention required */}
+      {attentionList.length > 0 && (
+        <div className="row justify-content-center mb-5">
+          <div className="col-xl-7 col-lg-9">
+            <Card className="border-0 shadow-sm">
+              <Card.Header className="bg-dark text-white py-3 text-center">
+                <h5 className="mb-0 fw-bold fs-6"><i className="bi bi-exclamation-triangle-fill text-danger me-2"></i>ATTENTION REQUIRED!</h5>
+              </Card.Header>
+              <Table hover className="mb-0 text-center align-middle" style={{ fontSize: '0.9rem' }}>
+                <thead className="table-light">
+                  <tr><th>Student</th><th>Status</th><th>Timeline</th></tr>
+                </thead>
+                <tbody>
+                  {attentionList.map(student => (
+                    <tr key={student.id}
+                      className={`clickable-row ${student.status === 'overdue' ? 'table-danger-subtle border-danger-subtle' : 'table-warning-subtle border-warning-subtle'}`}
+                      onClick={() => handleRowClick(student.id)} >
+                      <td className="fw-bold text-dark">{student.name}</td>
+                      <td>
+                        <Badge bg={student.status === 'overdue' ? 'danger' : 'warning'} text={student.status === 'warning' ? 'dark' : 'white'}>
+                          {student.status === 'overdue' ? 'Overdue' : 'Warning'}
+                        </Badge>
+                      </td>
+                      <td className={student.status === 'overdue' ? 'text-danger fw-semibold' : 'text-warning-emphasis fw-semibold'}>
+                        {student.months} months elapsed
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* Metrics grid */}
+      <div className="row g-3 mb-5">
+        <div className="col-md-4"><StatCard title="Overdue" val={stats.overdue} c="danger" /></div>
+        <div className="col-md-4"><StatCard title="Processing" val={stats.processing} c="warning" textC="text-warning-emphasis" /></div>
+        <div className="col-md-4"><StatCard title="Waiting for Enrollment" val={stats.waiting} c="primary" /></div>
+        <div className="col-md-4"><StatCard title="Enrolled" val={stats.enrolled} c="success" /></div>
+        <div className="col-md-4"><StatCard title="Graduating" val={stats.graduating} c="info" textC="text-info-emphasis" /></div>
+        <div className="col-md-4"><StatCard title="Archived" val={stats.archived} c="secondary" /></div>
+      </div>
+
+      {/* Almost finished */}
+      <div className="mb-5">
+        <h6 className="fw-bold mb-3 text-dark">Almost finished...</h6>
+        <div className="row row-cols-1 row-cols-md-3 g-3">
+          {almostComplete.length === 0 ? (
+            <div className="col-12">
+              <div className="text-muted text-center py-5 border rounded shadow-sm" style={{ backgroundColor: '#fdfdfd' }}>
+                <i className="bi bi-inbox fs-2 d-block mb-2 text-black-50"></i>
+                <span className="text-secondary fw-semibold">All finished...</span>
+              </div>
+            </div>
+          ) : (
+            almostComplete.map((student: any) => (
+              <div className="col" key={student.id}>
+                <Card className="border-0 shadow-sm h-100 clickable-card" style={{ cursor: 'pointer' }} onClick={() => handleRowClick(student.id)}>
+                  <Card.Body className="py-3">
+                    <div className="fw-bold text-dark mb-1">{student.name}</div>
+                    <div className="text-muted small mb-3">
+                      <div className="mb-1"><i className="bi bi-envelope me-1"></i> {student.email || '—'}</div>
+                      <div><i className="bi bi-telephone me-1"></i> {student.phone || '—'}</div>
+                    </div>
+                    <div className="bg-light p-2 rounded small">
+                      <div className="d-flex justify-content-between mb-1">
+                        <span className="fw-bold text-dark">Requirement Progress</span>
+                        <span className="text-muted fw-bold">{student.done_count} / {student.total_count}</span>
+                      </div>
+                      <ProgressBar
+                        now={student.progress_pct}
+                        variant={student.progress_pct < 50 ? 'danger' : student.progress_pct < 100 ? 'warning' : 'success'}
+                        style={{ height: '8px' }}
+                      />
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Recently enrolled */}
+      <div className="mb-4">
+        <h6 className="fw-bold text-dark mb-3">Check up on recently enrolled students....</h6>
+        <div className="row g-3">
+          {recentEnrollees.length === 0 ? (
+            <div className="col-4">
+              <div className="text-muted text-center py-5 border rounded shadow-sm" style={{ backgroundColor: '#fdfdfd' }}>
+                <i className="bi bi-inbox fs-2 d-block mb-2 text-black-50"></i>
+                <span className="text-secondary fw-semibold">No one enrolled recently...</span>
+              </div>
+            </div>
+          ) : (
+            recentEnrollees.map((student: any) => (
+              <div className="col-md-4" key={student.id}>
+                <Card className="border-0 shadow-sm bg-white h-100">
+                  <Card.Body className="d-flex flex-column justify-content-between p-3">
+                    <div>
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <h6 className="fw-bold mb-0 text-dark">{student.name}</h6>
+                      </div>
+                      <Badge bg="light" text="success" className="border border-success-subtle mb-3">Enrolled {student.daysAgo} days ago</Badge>
+                      <div className="text-muted small">
+                        <div className="mb-1"><i className="bi bi-envelope me-2"></i>{student.email || 'N/A'}</div>
+                        <div><i className="bi bi-telephone me-2"></i>{student.phone || 'N/A'}</div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {showDrawer && <StudentDrawer
+        show={showDrawer}
+        student={selectedStudent}
+        handleClose={closeDrawer}
+        onSave={() => { fetchDashboard(); closeDrawer(); }}
+      />}
+    </>
+  );
+}
+
+function StatCard({ title, val, c, textC }: { title: string; val: number; c: string; textC?: string }) {
+  const textColorClass = textC || `text-${c}-emphasis`;
+  return (
+    <Card className={`border-0 shadow-sm py-2 border-start border-${c} border-3 grad-${c} h-100`}>
+      <Card.Body>
+        <div className={`${textColorClass} small text-uppercase fw-bold`}>{title}</div>
+        <div className={`fs-3 fw-bold ${c === 'danger' ? 'text-danger' : 'text-dark'}`}>{val === 0 ? '—' : val}</div>
+      </Card.Body>
+    </Card>
+  );
+}
+
+============================================================
+FILE: src\renderer\src\pages\RequirementManager.tsx
+============================================================
+
+import { useState, useEffect } from 'react';
+import { Card, Form, Button, Modal } from 'react-bootstrap';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+
+export default function RequirementManager() {
+  const [requirements, setRequirements] = useState<any[]>([]);
+  const [deletedRequirements, setDeletedRequirements] = useState<any[]>([]);
+  const [newReq, setNewReq] = useState({ name: '', description: '' });
+  
+  const [editingReq, setEditingReq] = useState<any>(null);
+
+  const fetchRequirements = () => {
+    fetch('/api/requirements')
+      .then(res => res.json())
+      .then(data => setRequirements(data))
+      .catch(console.error);
+
+    fetch('/api/requirements?is_deleted=1')
+      .then(res => res.json())
+      .then(data => setDeletedRequirements(data))
+      .catch(console.error);
+  }
+
+  useEffect(() => {
+    fetchRequirements();
+  }, []);
+
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination) return;
+    
+    const items = Array.from(requirements);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    setRequirements(items);
+    
+    await fetch('/api/requirements/reorder', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ order: items.map(i => i.id) })
+    });
+  };
+
+  const handleCreate = async (e) => {
+      e.preventDefault();
+      await fetch('/api/requirements', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(newReq)
+      });
+      setNewReq({ name: '', description: '' });
+      fetchRequirements();
+  }
+
+  const handleUpdate = async (e) => {
+      e.preventDefault();
+      if (!editingReq) return;
+      await fetch(`/api/requirements/${editingReq.id}`, {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ name: editingReq.name, description: editingReq.description })
+      });
+      setEditingReq(null);
+      fetchRequirements();
+  }
+
+  const handleDelete = async (id) => {
+      if (!confirm("Are you sure? This will NOT remove from existing student templates, but will HIDE it for future use.")) return;
+      await fetch(`/api/requirements/${id}`, { method: 'DELETE' });
+      fetchRequirements();
+  }
+
+  const handleRestore = async (id) => {
+      await fetch(`/api/requirements/${id}/restore`, { method: 'POST' });
+      fetchRequirements();
+  }
+
+  const handlePermanentDelete = async (id) => {
+      if (!confirm("Are you absolutely sure? This will PERMANENTLY wipe this requirement from ALL student records!")) return;
+      await fetch(`/api/requirements/${id}/permanent`, { method: 'DELETE' });
+      fetchRequirements();
+  }
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+          <h1 className="h4 fw-bold text-dark">Requirement Manager</h1>
+      </div>
+
+      <div className="row g-4">
+        <div className="col-lg-8">
+          <Card className="border-0 shadow-sm h-100">
+            <Card.Header className="bg-dark text-white py-3">
+              <h5 className="mb-0 fw-bold fs-6">Requirement List</h5>
+            </Card.Header>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="requirements-list">
+                {(provided) => (
+                  <div className="list-group list-group-flush h-100" {...provided.droppableProps} ref={provided.innerRef}>
+                    {requirements.map((req, index) => (
+                      <Draggable key={req.id.toString()} draggableId={req.id.toString()} index={index}>
+                        {(provided) => (
+                          <div 
+                            className="list-group-item d-flex align-items-center justify-content-between p-3"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                          >
+                            <div className="d-flex align-items-center gap-3">
+                              <div className="text-muted" {...provided.dragHandleProps} style={{ cursor: 'grab' }}>
+                                <i className="bi bi-grip-vertical fs-5"></i>
+                              </div>
+                              <div>
+                                <div className="fw-bold text-dark">
+                                  {index + 1}. {req.name}
+                                </div>
+                                <small className="text-muted">{req.description || '—'}</small>
+                              </div>
+                            </div>
+                            <div className="d-flex align-items-center gap-3 pe-2">
+                              <Button variant="outline-primary" size="sm" className="py-1 px-2" onClick={() => setEditingReq(req)}>Edit</Button>
+                              <Button variant="outline-danger" size="sm" className="py-1 px-2" onClick={() => handleDelete(req.id)}>Delete</Button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    {requirements.length === 0 && <div className="p-4 text-center text-muted h-100 d-flex align-items-center justify-content-center">No requirements yet.</div>}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </Card>
+
+          {deletedRequirements.length > 0 && (
+            <Card className="border-0 shadow-sm mt-4">
+              <Card.Header className="bg-light text-muted py-3">
+                <h5 className="mb-0 fw-bold fs-6">Hidden Requirements</h5>
+              </Card.Header>
+              <div className="list-group list-group-flush h-100">
+                {deletedRequirements.map((req) => (
+                  <div key={req.id} className="list-group-item d-flex align-items-center justify-content-between p-3 bg-light">
+                    <div className="d-flex align-items-center gap-3 text-muted">
+                      <div><i className="bi bi-eye-slash fs-5"></i></div>
+                      <div style={{ textDecoration: 'line-through' }}>
+                        <div className="fw-semibold">
+                          {req.name}
+                        </div>
+                        <small>{req.description || 'No description'}</small>
+                      </div>
+                    </div>
+                    <div className="d-flex align-items-center gap-2 pe-2">
+                      <Button variant="outline-success" size="sm" className="py-1 px-2" onClick={() => handleRestore(req.id)}>Restore</Button>
+                      <Button variant="danger" size="sm" className="py-1 px-2" onClick={() => handlePermanentDelete(req.id)}>Delete</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+        </div>
+
+        <div className="col-lg-4">
+          <Card className="border-0 shadow-sm sticky-top" style={{ top: '1rem' }}>
+            <Card.Header className="bg-white py-3 border-bottom">
+              <h5 className="mb-0 fw-bold fs-6 text-dark">Register New Requirement</h5>
+            </Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleCreate}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-bold">Name</Form.Label>
+                  <Form.Control type="text" required value={newReq.name} onChange={e => setNewReq({...newReq, name: e.target.value})} />
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Label className="small fw-bold">Details</Form.Label>
+                  <Form.Control as="textarea" rows={3} value={newReq.description} onChange={e => setNewReq({...newReq, description: e.target.value})} />
+                </Form.Group>
+                <Button variant="dark" type="submit" className="w-100">Save Requirement</Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </div>
+      </div>
+
+      <Modal show={!!editingReq} onHide={() => setEditingReq(null)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="fs-5 fw-bold">Edit Requirement</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleUpdate}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label className="small fw-bold">Name</Form.Label>
+              <Form.Control type="text" required value={editingReq?.name || ''} onChange={e => setEditingReq({...editingReq, name: e.target.value})} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="small fw-bold">Details</Form.Label>
+              <Form.Control as="textarea" rows={3} value={editingReq?.description || ''} onChange={e => setEditingReq({...editingReq, description: e.target.value})} />
+            </Form.Group>
+            <div className="mt-3 text-muted small">
+                 <i className="bi bi-info-circle me-1"></i>
+                 Renaming will preserve the previous names as aliases.
+            </div>
+            {editingReq?.aliases && editingReq.aliases.length > 0 && (
+                <div className="mt-3">
+                    <span className="small fw-bold">Previous aliases: </span>
+                    {editingReq.aliases.map((alias, idx) => (
+                        <span key={idx} className="badge bg-secondary me-1">{alias}</span>
+                    ))}
+                </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="outline-secondary" onClick={() => setEditingReq(null)}>Cancel</Button>
+            <Button variant="dark" type="submit">Save Changes</Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
+  );
+}
+
+
+============================================================
+FILE: src\renderer\src\pages\Settings.tsx
+============================================================
+
+import { useState } from 'react';
+import { Card, Button, Alert } from 'react-bootstrap';
+
+export default function Settings() {
+    const [importStatus, setImportStatus] = useState<string | null>(null);
+
+    const handleExport = () => {
+        window.open('/api/backup/export', '_blank');
+    };
+
+    const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            try {
+                const content = event.target?.result as string;
+                const json = JSON.parse(content);
+                
+                const res = await fetch('/api/backup/import', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(json)
+                });
+                
+                if (res.ok) {
+                    setImportStatus('success');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    setImportStatus('error');
+                }
+            } catch (err) {
+                setImportStatus('error');
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    return (
+        <>
+            <h1 className="h4 mb-4 fw-bold">Settings</h1>
+            <Card className="border-0 shadow-sm mb-4">
+                <Card.Header className="bg-white border-bottom-0 pt-4 pb-2">
+                    <h5 className="mb-0 fw-bold">Data Management</h5>
+                </Card.Header>
+                <Card.Body>
+                    
+                    {importStatus === 'success' && <Alert variant="success">Database restored successfully! Reloading...</Alert>}
+                    {importStatus === 'error' && <Alert variant="danger">Failed to restore database. Ensure the file is valid.</Alert>}
+                    
+                    <div className="d-flex gap-3 align-items-center">
+                        <Button variant="dark" onClick={handleExport}>
+                            <i className="bi bi-download me-2"></i>Export Backup
+                        </Button>
+                        
+                        <div>
+                            <input 
+                                type="file" 
+                                id="import-file" 
+                                className="d-none" 
+                                accept=".backup,.json" 
+                                onChange={handleImport} 
+                            />
+                            <Button variant="outline-dark" onClick={() => document.getElementById('import-file')?.click()}>
+                                <i className="bi bi-upload me-2"></i>Import Backup
+                            </Button>
+                        </div>
+                    </div>
+                </Card.Body>
+            </Card>
+        </>
+    );
+}
+
+
+============================================================
+FILE: src\renderer\src\pages\StudentList.tsx
+============================================================
+
+import { useState, useEffect, useMemo } from 'react';
+import { Card, Table, Badge, Form, InputGroup, Button, ProgressBar, Pagination } from 'react-bootstrap';
+import StudentDrawer from '../components/StudentDrawer';
+import Fuse from 'fuse.js';
+
+export default function StudentList() {
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const fetchStudents = () => {
+    fetch('/api/students?is_archived=0')
+      .then(res => res.json())
+      .then(data => setStudents(data))
+      .catch(console.error);
+  }
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const filteredStudents = useMemo(() => {
+    let result = students;
+
+    if (filterStatus) {
+      result = result.filter(s => s.status === filterStatus);
+    }
+
+    let searchActive = false;
+    if (searchQuery.trim()) {
+      searchActive = true;
+      const fuse = new Fuse(result, {
+        keys: ['name', 'email', 'contact_number'],
+        threshold: 0.3,
+      });
+      result = fuse.search(searchQuery).map(r => r.item);
+    }
+
+    if (sortBy !== 'relevance' || !searchActive) {
+      result = [...result].sort((a, b) => {
+        if (sortBy === 'enroll_date_asc' || sortBy === 'relevance') {
+          if (!a.enroll_date && b.enroll_date) return 1;
+          if (a.enroll_date && !b.enroll_date) return -1;
+          if (a.enroll_date === b.enroll_date) return a.name.localeCompare(b.name);
+          return new Date(a.enroll_date).getTime() - new Date(b.enroll_date).getTime();
+        } else if (sortBy === 'enroll_date_desc') {
+          if (!a.enroll_date && b.enroll_date) return 1;
+          if (a.enroll_date && !b.enroll_date) return -1;
+          if (a.enroll_date === b.enroll_date) return a.name.localeCompare(b.name);
+          return new Date(b.enroll_date).getTime() - new Date(a.enroll_date).getTime();
+        } else if (sortBy === 'name_asc') {
+          return a.name.localeCompare(b.name);
+        }
+        return 0;
+      });
+    }
+
+    return result;
+  }, [students, searchQuery, filterStatus, sortBy]);
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleRowClick = (student) => {
+    fetch(`/api/students/${student.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setSelectedStudent(data);
+        setShowDrawer(true);
+      })
+      .catch(console.error);
+  };
+
+  const handleNewRegistration = () => {
+    setSelectedStudent({ name: '', status: 'processing', comments: '' });
+    setShowDrawer(true);
+  }
+
+  const handleSaveStudent = () => {
+    setShowDrawer(false);
+    fetchStudents();
+  };
+
+  const handleArchive = async (id, e) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to archive this student?")) return;
+    await fetch(`/api/students/${id}`, { method: 'DELETE' });
+    fetchStudents();
+  }
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+          <h1 className="h4 fw-bold text-dark mb-1">Student Directory</h1>
+        </div>
+        <Button variant="dark" onClick={handleNewRegistration}>Register Student</Button>
+      </div>
+
+      <div className="row justify-content-center">
+        <div className="col-12" style={{ width: '80%' }}>
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Body className="py-3">
+              <div className="row g-2 align-items-center">
+                <div className="col-md-5">
+                  <InputGroup>
+                    <InputGroup.Text className="bg-white border-end-0 text-muted"><i className="bi bi-search"></i></InputGroup.Text>
+                    <Form.Control className="border-start-0" placeholder="Search by name, email, phone..." value={searchQuery} onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }} />
+                  </InputGroup>
+                </div>
+                <div className="col-md-3">
+                  <InputGroup>
+                    <InputGroup.Text className="bg-light text-muted small">Filter by...</InputGroup.Text>
+                    <Form.Select value={filterStatus} onChange={e => { setFilterStatus(e.target.value); setCurrentPage(1); }}>
+                      <option value="">All statuses</option>
+                      <option value="processing">Processing</option>
+                      <option value="waiting">Waiting for Enrollment</option>
+                      <option value="enrolled">Enrolled</option>
+                      <option value="graduating">Graduating</option>
+                    </Form.Select>
+                  </InputGroup>
+                </div>
+                <div className="col-md-4">
+                  <InputGroup>
+                    <InputGroup.Text className="bg-light text-muted small">Sort by...</InputGroup.Text>
+                    <Form.Select value={sortBy} onChange={e => { setSortBy(e.target.value); setCurrentPage(1); }}>
+                      <option value="relevance">Relevance</option>
+                      <option value="enroll_date_asc">Enroll date (earliest first)</option>
+                      <option value="enroll_date_desc">Enroll date (latest first)</option>
+                      <option value="name_asc">Name (A-Z)</option>
+                    </Form.Select>
+                  </InputGroup>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </div>
+      </div>
+
+      <Card className="border-0 shadow-sm">
+        <div className="table-responsive">
+          <Table hover className="mb-0 align-middle" style={{ fontSize: '0.9rem' }}>
+            <thead className="table-light text-uppercase" style={{ fontSize: '0.75rem' }}>
+              <tr>
+                <th className="ps-3" style={{ width: '20%' }}>Student</th>
+                <th style={{ width: '10%' }}>Contact No</th>
+                <th style={{ width: '10%' }}>Campus</th>
+                <th style={{ width: '15%' }}>Enroll Date</th>
+                <th style={{ width: '15%' }}>Program Status</th>
+                <th style={{ width: '15%' }}>Requirement Status</th>
+                <th className="text-end pe-3" style={{ width: '15%' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedStudents.map(student => (
+                <tr key={student.id} onClick={() => handleRowClick(student)} className="clickable-row">
+                  <td className="ps-3">
+                    <div className="d-flex align-items-center gap-2">
+                      <div className="fw-bold text-dark">{student.name}</div>
+                      {student.isOverdue && <Badge bg="danger">Overdue</Badge>}
+                      {student.isWarning && <Badge bg="warning" text="dark">Warning</Badge>}
+                    </div>
+                    <span className="text-muted small">{student.email || '—'}</span>
+                  </td>
+                  <td><small className="text-dark fw-semibold">{student.contact_number || '—'}</small></td>
+                  <td><small className="text-dark fw-semibold">{student.campus || 'Manila'}</small></td>
+                  <td>
+                    {student.enroll_date ? (
+                      <>
+                        <div className="text-dark">{student.enroll_date}</div>
+                        <small className="text-muted">{student.months_elapsed} months elapsed</small>
+                      </>
+                    ) : (
+                      <div className="text-muted fst-italic">—</div>
+                    )}
+                  </td>
+                  <td>
+                    {student.status === 'enrolled' && student.isOverdue ? (
+                      <span className="text-danger fw-bold">Overdue</span>
+                    ) : student.status === 'graduating' ? (
+                      <span className="text-info-emphasis fw-semibold">Graduating</span>
+                    ) : student.status === 'waiting' ? (
+                      <span className="text-dark fw-semibold">Waiting for Enrollment</span>
+                    ) : (
+                      <span className="text-dark fw-semibold text-capitalize">{student.status}</span>
+                    )}
+                  </td>
+                  <td>
+                    {student.pending_docs > 0 ? (
+                      <div className="d-flex align-items-center gap-2">
+                        <ProgressBar variant="warning" now={student.total_docs > 0 ? (student.done_count / student.total_docs * 100) : 0} style={{ height: '6px', width: '80px' }} />
+                        <small className="text-muted text-nowrap">{student.pending_docs} pending</small>
+                      </div>
+                    ) : (
+                      <span className="text-success small fw-semibold"><i className="bi bi-check-circle-fill"></i> Complete</span>
+                    )}
+                  </td>
+                  <td className="text-end pe-3" onClick={(e) => e.stopPropagation()}>
+                    <div className="d-inline-flex gap-1">
+                      <Button variant="outline-dark" size="sm" onClick={() => handleRowClick(student)}>Manage</Button>
+                      <Button variant="outline-secondary" size="sm" onClick={(e) => handleArchive(student.id, e)}>Archive</Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {paginatedStudents.length === 0 && (
+                <tr><td colSpan={7} className="text-center py-4 text-muted">No students found.</td></tr>
+              )}
+            </tbody>
+          </Table>
+        </div>
+      </Card>
+
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-4">
+          <Pagination>
+            <Pagination.Prev disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} />
+            {[...Array(totalPages)].map((_, idx) => (
+              <Pagination.Item key={idx + 1} active={idx + 1 === currentPage} onClick={() => setCurrentPage(idx + 1)}>
+                {idx + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} />
+          </Pagination>
+        </div>
+      )}
+
+      {showDrawer && <StudentDrawer
+        show={showDrawer}
+        handleClose={() => setShowDrawer(false)}
+        student={selectedStudent}
+        onSave={handleSaveStudent}
+      />}
+    </>
+  );
+}
+
+
